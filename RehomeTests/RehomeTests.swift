@@ -51,3 +51,32 @@ struct PriceTests {
         #expect(PriceParser.cents(from: "") == nil)
     }
 }
+
+struct SizeTests {
+    @Test func everySystemListsEachSizeOnce() {
+        for system in SizeSystem.allCases {
+            #expect(Set(system.sizes).count == system.sizes.count)
+        }
+    }
+
+    @Test func kidsShoeSizesRunFromBabyToBigKid() {
+        let sizes = SizeSystem.kidsShoe.sizes
+        #expect(sizes.first == "1C")
+        #expect(sizes.contains("13.5C"))
+        #expect(sizes.last == "7Y")
+    }
+
+    @Test func kidsSizesSayKids() {
+        #expect(SizeSystem.kids.phrase(for: "10/12") == "Kids' size 10/12")
+        #expect(SizeSystem.kidsLetter.label(for: "S") == "Kids S")
+        #expect(SizeSystem.toddler.phrase(for: "3T") == "Size 3T")
+    }
+
+    @Test func kidsSizeReadsNaturallyInPosts() {
+        let facts = ListingFacts(
+            title: "Puffer jacket", brand: "", category: "Coats & Jackets", size: "Kids 10/12",
+            condition: "Good", color: "", material: "", measurements: "", priceCents: 0, originalPriceCents: 0
+        )
+        #expect(DescriptionWriter.templateBody(facts, tone: .simple) == "Puffer jacket, kids' size 10/12. Good.")
+    }
+}

@@ -109,7 +109,16 @@ nonisolated enum DescriptionWriter {
         let what = [facts.brand, facts.color.lowercased(), name]
             .filter { !$0.isEmpty }
             .joined(separator: " ")
-        let sizePart = facts.size.isEmpty ? "" : (facts.size == "One size" ? ", one size" : ", size \(facts.size)")
+        let sizePart: String
+        if facts.size.isEmpty {
+            sizePart = ""
+        } else if facts.size == "One size" {
+            sizePart = ", one size"
+        } else if facts.size.hasPrefix("Kids ") {
+            sizePart = ", kids' size \(facts.size.dropFirst("Kids ".count))"
+        } else {
+            sizePart = ", size \(facts.size)"
+        }
         let condition = facts.condition.lowercased()
         switch tone {
         case .simple:

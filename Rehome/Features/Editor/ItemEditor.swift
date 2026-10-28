@@ -37,20 +37,38 @@ struct ItemEditor: View {
                             Text(category.title).tag(category)
                         }
                     }
+                    // A pushed list, so the selection checkmark is on the right.
+                    .pickerStyle(.navigationLink)
                     .tint(.primary)
                 }
 
-                Section("Size") {
-                    Picker("Size system", selection: $draft.sizeSystem) {
-                        ForEach(SizeSystem.allCases) { system in
-                            Text(system.title).tag(system)
+                Section {
+                    Picker("Size type", selection: $draft.sizeSystem) {
+                        Section("Adult") {
+                            ForEach(SizeSystem.adult) { system in
+                                Text(system.title).tag(system)
+                            }
+                        }
+                        Section("Kids & Baby") {
+                            ForEach(SizeSystem.children) { system in
+                                Text(system.title).tag(system)
+                            }
+                        }
+                        Section {
+                            Text(SizeSystem.oneSize.title).tag(SizeSystem.oneSize)
                         }
                     }
-                    .pickerStyle(.segmented)
-                    .listRowSeparator(.hidden)
+                    .pickerStyle(.navigationLink)
+                    .tint(.primary)
                     if draft.sizeSystem != .oneSize {
                         SizeChips(sizes: draft.sizeSystem.sizes, selection: $draft.size)
                         TextField("Or type a size", text: $draft.size)
+                    }
+                } header: {
+                    Text("Size")
+                } footer: {
+                    if let note = draft.sizeSystem.note {
+                        Text(note)
                     }
                 }
 
@@ -173,8 +191,14 @@ struct SizeChips: View {
     var sizes: [String]
     @Binding var selection: String
 
+    /// Wide enough for the longest label ("Newborn", "13.5C"), so no chip wraps.
+    private var minimumWidth: CGFloat {
+        let longest = sizes.map(\.count).max() ?? 0
+        return longest > 5 ? 84 : (longest > 3 ? 64 : 52)
+    }
+
     var body: some View {
-        LazyVGrid(columns: [GridItem(.adaptive(minimum: 52), spacing: 8)], spacing: 8) {
+        LazyVGrid(columns: [GridItem(.adaptive(minimum: minimumWidth), spacing: 8)], spacing: 8) {
             ForEach(sizes, id: \.self) { size in
                 let selected = selection == size
                 Button {
@@ -183,6 +207,8 @@ struct SizeChips: View {
                     Text(size)
                         .font(.subheadline.weight(.semibold))
                         .monospacedDigit()
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.8)
                         .frame(maxWidth: .infinity, minHeight: 44)
                         .foregroundStyle(selected ? Color.white : Color.primary)
                         .background(selected ? Brand.berry : Color(.tertiarySystemFill), in: .rect(cornerRadius: 12))

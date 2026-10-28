@@ -178,7 +178,7 @@ struct PostView: View {
     // MARK: - Actions
 
     private var listingTitle: String {
-        [item.brand, item.displayTitle, item.size.isEmpty ? nil : "· \(item.size)"]
+        [item.brand, item.displayTitle, item.size.isEmpty ? nil : "· \(item.sizeSystem.label(for: item.size))"]
             .compactMap { $0 }
             .filter { !$0.isEmpty }
             .joined(separator: " ")

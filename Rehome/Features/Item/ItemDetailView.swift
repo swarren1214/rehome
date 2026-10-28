@@ -164,7 +164,7 @@ struct ItemDetailView: View {
         if item.sizeSystem == .oneSize {
             rows.append(("Size", "One size"))
         } else if !item.size.isEmpty {
-            rows.append(("Size", item.size))
+            rows.append(("Size", item.sizeSystem.label(for: item.size)))
         }
         rows.append(("Condition", item.condition.title))
         if !item.color.isEmpty { rows.append(("Color", item.color)) }

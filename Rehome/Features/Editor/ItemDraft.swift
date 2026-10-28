@@ -48,7 +48,7 @@ struct ItemDraft {
             title: title.trimmingCharacters(in: .whitespacesAndNewlines),
             brand: brand.trimmingCharacters(in: .whitespacesAndNewlines),
             category: category.title,
-            size: sizeSystem == .oneSize ? "One size" : size,
+            size: sizeSystem == .oneSize ? "One size" : (size.isEmpty ? "" : sizeSystem.label(for: size)),
             condition: condition.title,
             color: color,
             material: material,

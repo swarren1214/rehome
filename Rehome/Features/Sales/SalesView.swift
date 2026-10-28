@@ -254,7 +254,7 @@ struct SalesView: View {
 
     private func soldLine(_ item: Item) -> String {
         var parts: [String] = []
-        if !item.size.isEmpty { parts.append("Size \(item.size)") }
+        if !item.size.isEmpty { parts.append(item.sizeSystem.phrase(for: item.size)) }
         if let soldAt = item.soldAt { parts.append(soldAt.formatted(.dateTime.month(.abbreviated).day())) }
         if let days = item.daysToSell { parts.append("sold in \(days) \(days == 1 ? "day" : "days")") }
         return parts.joined(separator: " · ")
